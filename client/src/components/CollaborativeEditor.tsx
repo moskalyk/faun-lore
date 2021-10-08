@@ -55,9 +55,7 @@ class Faun {
         this.feed()
 
         //register userlist
-        this.numbers()
-
-
+        this.surroundings()
 
         //TODO: register compute size
 
@@ -96,7 +94,7 @@ class Faun {
     }
 
     // # of online peers
-    numbers(){
+    surroundings(){
         let self = this;
 
         registerUserStatus({
@@ -142,6 +140,27 @@ class Faun {
                 // });
             }
         })
+    }
+
+    numbers(){
+        let count = 0
+        let userSet = {}
+
+        this.peers.concat(...this.peers) /* flatten the array */
+        .map(peer => {
+            if(!(peer.user.name in userSet) && peer.isOnline){
+                userSet[peer.user.name] = peer
+                count++
+                return peer
+            } else {
+                return
+            }
+            // peer.isOnline
+        }) /* return only enabled: true */
+
+        console.log('LENGTH')
+        console.log(count)
+        return count
     }
 }
 
@@ -208,28 +227,8 @@ export const CollaborativeEditor = () => {
             faun.record()
 
             setInterval(() => {
-                console.log('PEER_LIST')
-                let count = 0
-                let userSet = {}
-
-                faun.peers.concat(...faun.peers) /* flatten the array */
-                .map(peer => {
-                    console.log(peer)
-                    console.log(peer.name)
-                    console.log(peer.user.name in userSet)
-                    if(!(peer.user.name in userSet) && peer.isOnline){
-                        console.log('COUNTING')
-                        userSet[peer.name] = peer
-                        count++
-                        return peer
-                    } else {
-                        return
-                    }
-                    // peer.isOnline
-                }) /* return only enabled: true */
-
-                console.log('LENGTH')
-                console.log(count)
+                console.log(faun.numbers())
+                
             }, 1000)
         }
 
