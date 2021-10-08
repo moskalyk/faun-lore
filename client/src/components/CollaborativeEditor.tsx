@@ -36,21 +36,28 @@ class Faun {
 
     constructor(syncClient){
         this.client = syncClient;
+        this.peers = [{}]
 
         // register cid handler
         registerTextState({
             notifyTextUpdate: (changes, isAuthorized) => {
+                console.log('CHANGES')
                 if (changes) {
-                    syncClient.receiveChanges(changes);
+                    console.log(changes)
+                    this.client.receiveChanges(changes);
                 }
             }
         })
 
-        //register online status
+        this.client.start()
+
+        //register on changes
         this.feed()
 
         //register userlist
         this.numbers()
+
+
 
         //TODO: register compute size
 
@@ -82,7 +89,10 @@ class Faun {
 
     // push a particle
     record(cid){
-        broadcastUpdates(cid, this.client)
+        setInterval(() => {
+            console.log('calling window')
+            // broadcastUpdates(String(Math.random()), this.client)
+        }, 1000)
     }
 
     // # of online peers
@@ -99,21 +109,23 @@ class Faun {
                 console.log('NEW_USER')
                 console.log(user)
                 console.log(isOnline)
-                self.peers.push(user);
+                self.peers.push({user: user, isOnline: isOnline});
 
 
                 // setUsers((prev) => {
-                //     const u = user;
-                //     const result = new Map(prev);
-                //     if (result.has(u.peer_id)) {
-                //         return result;
-                //     }
+                    // const u = user;
+                    // const result = new Map();
+                    // if (result.has(u.peer_id)) {
+                    //     return result;
+                    // }
 
-                //     result.set(u.peer_id, {
-                //         name: u.name,
-                //         id: u.peer_id,
-                //         isOnline: isOnline,
-                //     });
+                    // result.set(u.peer_id, {
+                    //     name: u.name,
+                    //     id: u.peer_id,
+                    //     isOnline: isOnline,
+                    // });
+
+
 
                 //     return result;
                 // });
@@ -147,56 +159,82 @@ export const CollaborativeEditor = () => {
     const [syncClient, setSyncClient] = useState(new SyncClient());
 
     useEffect(() => {
-        syncClient.handleDocUpdate = (doc) => {
-            setText(doc.text.toString());
-        };
+        let faun;
 
-        syncClient.handleSendChanges = (changes: string) => {
-            withErrorHandlingAsync(async () => {
-                const res = await addEntry(changes);
-                if (res.ret_code !== 0) {
-                    throw new Error(
-                        `Failed to add message to history service, code=${res.ret_code}, message=${res.err_msg}`,
-                    );
-                }
-            });
-        };
+        // syncClient.handleSendChanges = (changes: string) => {
+        //     withErrorHandlingAsync(async () => {
+        //         const res = await addEntry(changes);
+        //         if (res.ret_code !== 0) {
+        //             throw new Error(
+        //                 `Failed to add message to history service, code=${res.ret_code}, message=${res.err_msg}`,
+        //             );
+        //         }
+        //     });
+        // };
 
-        registerTextState({
-            notifyTextUpdate: (changes, isAuthorized) => {
-                if (changes) {
-                    syncClient.receiveChanges(changes);
-                }
-            }
-        })
+        // registerTextState({
+        //     notifyTextUpdate: (changes, isAuthorized) => {
+        //         if (changes) {
+        //             syncClient.receiveChanges(changes);
+        //         }
+        //     }
+        // })
         
 
-        syncClient.start();
+        // syncClient.start();
 
         // don't block
-        withErrorHandlingAsync(async () => {
-            const res = await getHistory();
-                console.log('RES')
-                console.log(res)
-            for (let e of res.entries) {
-                syncClient.receiveChanges(e.body);
-            }
+        // withErrorHandlingAsync(async () => {
+        //     const res = await getHistory();
+        //         console.log('RES')
+        //         console.log(res)
+        //     for (let e of res.entries) {
+        //         syncClient.receiveChanges(e.body);
+        //     }
 
-            if (syncClient.getDoc() === undefined) {
-                syncClient.syncDoc(initDoc());
-            }
-        });
+        //     if (syncClient.getDoc() === undefined) {
+        //         syncClient.syncDoc(initDoc());
+        //     }
+        // });
 
         if(!clock){
             setClock(true)
+            faun = new Faun(syncClient)
+
+            faun.client.handleDocUpdate = (doc) => {
+                setText(doc.text.toString());
+            };
+
+            faun.record()
+
             setInterval(() => {
-                console.log('calling window')
-                broadcastUpdates(String(Math.random()), syncClient)
+                console.log('PEER_LIST')
+                let count = 0
+                let userSet = {}
+
+                faun.peers.concat(...faun.peers) /* flatten the array */
+                .map(peer => {
+                    console.log(peer)
+                    console.log(peer.name)
+                    console.log(peer.name in userSet)
+                    if(peer.name in userSet && peer.isOnline){
+                        console.log('COUNTING')
+                        userSet[peer.name] = peer
+                        count++
+                        return peer
+                    } else {
+                        return
+                    }
+                    // peer.isOnline
+                }) /* return only enabled: true */
+
+                console.log('LENGTH')
+                console.log(count)
             }, 1000)
         }
 
         return () => {
-            syncClient.stop();
+            faun.client.stop();
         };
     }, []);
 
