@@ -36,7 +36,7 @@ class Faun {
 
     constructor(syncClient){
         this.client = syncClient;
-        this.peers = [{}]
+        this.peers = [{user: 'masterchief', isOnline:false}]
 
         // register cid handler
         registerTextState({
@@ -216,8 +216,8 @@ export const CollaborativeEditor = () => {
                 .map(peer => {
                     console.log(peer)
                     console.log(peer.name)
-                    console.log(peer.name in userSet)
-                    if(peer.name in userSet && peer.isOnline){
+                    console.log(peer.user.name in userSet)
+                    if(!(peer.user.name in userSet) && peer.isOnline){
                         console.log('COUNTING')
                         userSet[peer.name] = peer
                         count++
