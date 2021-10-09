@@ -1,16 +1,5 @@
 {
     "services": {
-        "history": {
-            "dependencies": [
-                "history_inmemory"
-            ],
-            "node": "12D3KooWSD5PToNiLQwKDXsu8JSysCwUt8BVUJEqCHcDe7P5h45e",
-            "hashDependencies": [
-                "hash:e5e01223c5cc8da1d2247137f5c365d1a772f950c6722a022e4f7de7a506b204"
-            ],
-            "blueprint_id": "66ef8dbc8125b807a9229ffcdb2117a78f100d7f0cdaa725bf91c0878db8666c",
-            "id": "0cd8f802-b5ee-4148-b07c-30454c8d634f"
-        },
         "user_list": {
             "dependencies": [
                 "user_list_inmemory"
@@ -20,36 +9,16 @@
                 "hash:ea35fa754d79e162f939186a6cd0d5e990d0b25a04d570df68e32c32ab5cd540"
             ],
             "blueprint_id": "de584bec15368d09b9aa188dee9bc9986147f1872e6009808dcd4157cb34a164",
-            "id": "c9cb6c32-12bd-498b-86e5-9093b9f4b1c5"
+            "id": "1d050760-edc5-45e8-96ac-26eff4f6cb5f"
         }
     },
     "modules": {
-        "history_inmemory": {
-            "file": "history.wasm",
-            "config": {
-                "preopened_files": [
-                    "/tmp"
-                ],
-                "mapped_dirs": {
-                    "history": "/tmp"
-                }
-            },
-            "hash": "e5e01223c5cc8da1d2247137f5c365d1a772f950c6722a022e4f7de7a506b204"
-        },
         "user_list_inmemory": {
             "file": "user_list.wasm",
             "config": {},
             "hash": "ea35fa754d79e162f939186a6cd0d5e990d0b25a04d570df68e32c32ab5cd540"
         }
     },
-    "scripts": {
-        "set_tetraplet": {
-            "file": "set_tetraplet.air",
-            "variables": {
-                "function": "is_authenticated",
-                "json_path": "$.is_authenticated"
-            }
-        }
-    },
+    "scripts": {},
     "script_storage": {}
 }

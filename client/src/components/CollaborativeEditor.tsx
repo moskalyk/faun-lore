@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 // doc control
 import { getUpdatedDocFromText, initDoc, SyncClient } from '../app/sync';
 import { withErrorHandlingAsync } from './util';
-import { addEntry, getHistory, registerTextState } from 'src/_aqua/app';
+import { addEntry, registerTextState } from 'src/_aqua/app';
 
 // user control
 import { initAfterJoin, updateOnlineStatuses } from 'src/_aqua/app';
@@ -64,16 +64,16 @@ class Faun {
     // list feed
     async feed(){
         try{
-            const res = await getHistory();
-                console.log('RES')
-                console.log(res)
-            for (let e of res.entries) {
-                this.client.receiveChanges(e.body);
-            }
+            // const res = await getHistory();
+            //     console.log('RES')
+            //     console.log(res)
+            // for (let e of res.entries) {
+            //     this.client.receiveChanges(e.body);
+            // }
 
-            if (this.client.getDoc() === undefined) {
-                this.client.syncDoc(initDoc());
-            }
+            // if (this.client.getDoc() === undefined) {
+            //     this.client.syncDoc(initDoc());
+            // }
         }catch(e){
             console.log('error with feed')
             console.log(e)
@@ -87,8 +87,15 @@ class Faun {
 
     // push a particle
     record(cid){
-        setInterval(() => {
+        setInterval(async () => {
             console.log('calling window')
+            try{
+                const res = await addEntry(cid);
+
+            }catch(e){
+                console.log('error sending change')
+            }
+
             // broadcastUpdates(String(Math.random()), this.client)
         }, 1000)
     }

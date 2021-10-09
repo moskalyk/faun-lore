@@ -6,14 +6,13 @@ export const userList = {
     service_id: config.services.user_list.id,
 };
 
-export const history = {
-    peer_id: config.services.history.node,
-    service_id: config.services.history.id,
-};
+// export const history = {
+//     peer_id: config.services.history.node,
+//     service_id: config.services.history.id,
+// };
 
 export const fluentPadApp = {
     user_list: userList,
-    history: history,
 };
 
 export const relayNode = krasnodar[0];

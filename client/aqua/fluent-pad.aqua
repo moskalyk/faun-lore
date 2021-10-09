@@ -8,7 +8,6 @@ data ServiceInstance:
     service_id: string
 
 data App:
-    history: ServiceInstance
     user_list: ServiceInstance
 
 service UserStatus("fluence/fluent-pad/status"):

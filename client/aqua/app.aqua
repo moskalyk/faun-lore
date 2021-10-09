@@ -2,11 +2,10 @@ module App
 
 import PeerId, Op, Peer from "@fluencelabs/aqua-lib/builtin.aqua"
 import AppConfig, UserStatus, TextState from "fluent-pad.aqua"
-import User, UserList, AuthResult from "user-list.aqua"
+import User, UserList, AuthResult, AddServiceResult from "user-list.aqua"
 import EmptyServiceResult from "common.aqua"
-import History, GetEntriesServiceResult, AddServiceResult from "history.aqua"
 
-export join, getUserList, initAfterJoin, updateOnlineStatuses, leave, auth, getHistory, addEntry, UserStatus, TextState, AppConfig
+export join, getUserList, initAfterJoin, updateOnlineStatuses, leave, auth, addEntry, UserStatus, TextState, AppConfig
 
 func join(user: User) -> EmptyServiceResult:
     app <- AppConfig.getApp()
@@ -60,23 +59,12 @@ func auth() -> AuthResult:
         res <- UserList.is_authenticated()
     <- res
 
-func getHistory() -> GetEntriesServiceResult:
+func addEntry(entry: string):
     app <- AppConfig.getApp()
     authRes <- auth()
-    on app.history.peer_id:
-        History app.history.service_id
-        res <- History.get_all(authRes.is_authenticated)
-    <- res
 
-func addEntry(entry: string) -> AddServiceResult:
-    app <- AppConfig.getApp()
-    authRes <- auth()
-    on app.history.peer_id:
-        History app.history.service_id
-        res <- History.add(entry, authRes.is_authenticated)
     allUsers <- getUserList()
     for user <- allUsers par:
         if user.peer_id != INIT_PEER_ID:
             on user.peer_id via user.relay_id:
                 TextState.notifyTextUpdate(entry, authRes.is_authenticated)
-    <- res

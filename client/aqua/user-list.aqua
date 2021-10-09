@@ -1,4 +1,4 @@
-module UserList declares User, UserList, AuthResult
+module UserList declares User, UserList, AuthResult, AddServiceResult
 
 import PeerId from "@fluencelabs/aqua-lib/builtin.aqua"
 import EmptyServiceResult from "common.aqua"
@@ -17,6 +17,11 @@ data AuthResult:
     ret_code: i32
     err_msg: string
     is_authenticated: bool
+
+data AddServiceResult:
+    ret_code: i32
+    err_msg: string
+    entry_id: u64
 
 service UserList:
     is_authenticated() -> AuthResult

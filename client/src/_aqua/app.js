@@ -12,25 +12,15 @@ import {
     RequestFlow,
     RequestFlowBuilder,
     CallParams,
-} from '@fluencelabs/fluence/dist/internal/compilerSupport/v1';
+} from '@fluencelabs/fluence/dist/internal/compilerSupport/v1.js';
 
 
 // Services
 
- export interface UserStatusDef {
-     notifyOnline: (userPeerId: string, isOnline: boolean, callParams: CallParams<'userPeerId' | 'isOnline'>) => void;
-notifyUserAdded: (currentUser: {name:string;peer_id:string;relay_id:string}, isOnline: boolean, callParams: CallParams<'currentUser' | 'isOnline'>) => void;
-notifyUserRemoved: (userPeerId: string, callParams: CallParams<'userPeerId'>) => void;
- }
-
- export function registerUserStatus(service: UserStatusDef): void;
-export function registerUserStatus(serviceId: string, service: UserStatusDef): void;
-export function registerUserStatus(peer: FluencePeer, service: UserStatusDef): void;
-export function registerUserStatus(peer: FluencePeer, serviceId: string, service: UserStatusDef): void;
- export function registerUserStatus(...args: any) {
-    let peer: FluencePeer;
-    let serviceId: any;
-    let service: any;
+ export function registerUserStatus(...args) {
+    let peer;
+    let serviceId;
+    let service;
     if (FluencePeer.isInstance(args[0])) {
         peer = args[0];
     } else {
@@ -45,7 +35,7 @@ export function registerUserStatus(peer: FluencePeer, serviceId: string, service
  else {
      serviceId = "fluence/fluent-pad/status"
 }
-
+    
     // Figuring out which overload is the service.
     // If the first argument is not Fluence Peer and it is an object, then it can only be the service def
     // If the first argument is peer, we are checking further. The second argument might either be
@@ -116,18 +106,10 @@ export function registerUserStatus(peer: FluencePeer, serviceId: string, service
       
 
 
- export interface TextStateDef {
-     notifyTextUpdate: (changes: string, isAuthorized: boolean, callParams: CallParams<'changes' | 'isAuthorized'>) => void;
- }
-
- export function registerTextState(service: TextStateDef): void;
-export function registerTextState(serviceId: string, service: TextStateDef): void;
-export function registerTextState(peer: FluencePeer, service: TextStateDef): void;
-export function registerTextState(peer: FluencePeer, serviceId: string, service: TextStateDef): void;
- export function registerTextState(...args: any) {
-    let peer: FluencePeer;
-    let serviceId: any;
-    let service: any;
+ export function registerTextState(...args) {
+    let peer;
+    let serviceId;
+    let service;
     if (FluencePeer.isInstance(args[0])) {
         peer = args[0];
     } else {
@@ -142,7 +124,7 @@ export function registerTextState(peer: FluencePeer, serviceId: string, service:
  else {
      serviceId = "fluence/fluent-pad/text-state"
 }
-
+    
     // Figuring out which overload is the service.
     // If the first argument is not Fluence Peer and it is an object, then it can only be the service def
     // If the first argument is peer, we are checking further. The second argument might either be
@@ -183,18 +165,10 @@ export function registerTextState(peer: FluencePeer, serviceId: string, service:
       
 
 
- export interface AppConfigDef {
-     getApp: (callParams: CallParams<null>) => {user_list:{peer_id:string;service_id:string}};
- }
-
- export function registerAppConfig(service: AppConfigDef): void;
-export function registerAppConfig(serviceId: string, service: AppConfigDef): void;
-export function registerAppConfig(peer: FluencePeer, service: AppConfigDef): void;
-export function registerAppConfig(peer: FluencePeer, serviceId: string, service: AppConfigDef): void;
- export function registerAppConfig(...args: any) {
-    let peer: FluencePeer;
-    let serviceId: any;
-    let service: any;
+ export function registerAppConfig(...args) {
+    let peer;
+    let serviceId;
+    let service;
     if (FluencePeer.isInstance(args[0])) {
         peer = args[0];
     } else {
@@ -209,7 +183,7 @@ export function registerAppConfig(peer: FluencePeer, serviceId: string, service:
  else {
      serviceId = "fluence/get-config"
 }
-
+    
     // Figuring out which overload is the service.
     // If the first argument is not Fluence Peer and it is an object, then it can only be the service def
     // If the first argument is peer, we are checking further. The second argument might either be
@@ -251,12 +225,10 @@ export function registerAppConfig(peer: FluencePeer, serviceId: string, service:
 
 // Functions
 
- export function addEntry(entry: string, config?: {ttl?: number}) : Promise<void>;
- export function addEntry(peer: FluencePeer, entry: string, config?: {ttl?: number}) : Promise<void>;
- export function addEntry(...args: any) {
-     let peer: FluencePeer;
-     let entry: any;
-     let config: any;
+ export function addEntry(...args) {
+     let peer;
+     let entry;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          entry = args[1];
@@ -267,8 +239,8 @@ config = args[2];
 config = args[1];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<void>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -394,18 +366,16 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return Promise.race([promise, Promise.resolve()]);
 }
       
 
 
- export function initAfterJoin(me: {name:string;peer_id:string;relay_id:string}, config?: {ttl?: number}) : Promise<{name:string;peer_id:string;relay_id:string}[]>;
- export function initAfterJoin(peer: FluencePeer, me: {name:string;peer_id:string;relay_id:string}, config?: {ttl?: number}) : Promise<{name:string;peer_id:string;relay_id:string}[]>;
- export function initAfterJoin(...args: any) {
-     let peer: FluencePeer;
-     let me: any;
-     let config: any;
+ export function initAfterJoin(...args) {
+     let peer;
+     let me;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          me = args[1];
@@ -416,8 +386,8 @@ config = args[2];
 config = args[1];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<{name:string;peer_id:string;relay_id:string}[]>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -544,18 +514,16 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return promise;
 }
       
 
 
- export function updateOnlineStatuses(config?: {ttl?: number}) : Promise<void>;
- export function updateOnlineStatuses(peer: FluencePeer, config?: {ttl?: number}) : Promise<void>;
- export function updateOnlineStatuses(...args: any) {
-     let peer: FluencePeer;
+ export function updateOnlineStatuses(...args) {
+     let peer;
      
-     let config: any;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          config = args[1];
@@ -564,8 +532,8 @@ config = args[1];
          config = args[0];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<void>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -659,18 +627,16 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return Promise.race([promise, Promise.resolve()]);
 }
       
 
 
- export function getUserList(config?: {ttl?: number}) : Promise<{name:string;peer_id:string;relay_id:string}[]>;
- export function getUserList(peer: FluencePeer, config?: {ttl?: number}) : Promise<{name:string;peer_id:string;relay_id:string}[]>;
- export function getUserList(...args: any) {
-     let peer: FluencePeer;
+ export function getUserList(...args) {
+     let peer;
      
-     let config: any;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          config = args[1];
@@ -679,8 +645,8 @@ config = args[1];
          config = args[0];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<{name:string;peer_id:string;relay_id:string}[]>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -743,18 +709,16 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return promise;
 }
       
 
 
- export function leave(config?: {ttl?: number}) : Promise<void>;
- export function leave(peer: FluencePeer, config?: {ttl?: number}) : Promise<void>;
- export function leave(...args: any) {
-     let peer: FluencePeer;
+ export function leave(...args) {
+     let peer;
      
-     let config: any;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          config = args[1];
@@ -763,8 +727,8 @@ config = args[1];
          config = args[0];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<void>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -864,18 +828,16 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return Promise.race([promise, Promise.resolve()]);
 }
       
 
 
- export function join(user: {name:string;peer_id:string;relay_id:string}, config?: {ttl?: number}) : Promise<{err_msg:string;ret_code:number}>;
- export function join(peer: FluencePeer, user: {name:string;peer_id:string;relay_id:string}, config?: {ttl?: number}) : Promise<{err_msg:string;ret_code:number}>;
- export function join(...args: any) {
-     let peer: FluencePeer;
-     let user: any;
-     let config: any;
+ export function join(...args) {
+     let peer;
+     let user;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          user = args[1];
@@ -886,8 +848,8 @@ config = args[2];
 config = args[1];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<{err_msg:string;ret_code:number}>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -953,18 +915,16 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return promise;
 }
       
 
 
- export function auth(config?: {ttl?: number}) : Promise<{err_msg:string;is_authenticated:boolean;ret_code:number}>;
- export function auth(peer: FluencePeer, config?: {ttl?: number}) : Promise<{err_msg:string;is_authenticated:boolean;ret_code:number}>;
- export function auth(...args: any) {
-     let peer: FluencePeer;
+ export function auth(...args) {
+     let peer;
      
-     let config: any;
+     let config;
      if (FluencePeer.isInstance(args[0])) {
          peer = args[0];
          config = args[1];
@@ -973,8 +933,8 @@ config = args[1];
          config = args[0];
      }
     
-     let request: RequestFlow;
-     const promise = new Promise<{err_msg:string;is_authenticated:boolean;ret_code:number}>((resolve, reject) => {
+     let request;
+     const promise = new Promise((resolve, reject) => {
          const r = new RequestFlowBuilder()
                  .disableInjections()
                  .withRawScript(
@@ -1037,7 +997,7 @@ config = args[1];
         }
         request = r.build();
     });
-    peer.internals.initiateFlow(request!);
+    peer.internals.initiateFlow(request);
     return promise;
 }
       
