@@ -59,7 +59,7 @@ func auth() -> AuthResult:
         res <- UserList.is_authenticated()
     <- res
 
-func addEntry(entry: string):
+func addEntry(entry: string) -> bool:
     app <- AppConfig.getApp()
     authRes <- auth()
 
@@ -68,3 +68,4 @@ func addEntry(entry: string):
         if user.peer_id != INIT_PEER_ID:
             on user.peer_id via user.relay_id:
                 TextState.notifyTextUpdate(entry, authRes.is_authenticated)
+    <- true

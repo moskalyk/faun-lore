@@ -44,7 +44,7 @@ class Faun {
                 console.log('CHANGES')
                 if (changes) {
                     console.log(changes)
-                    this.client.receiveChanges(changes);
+                    // this.client.receiveChanges(changes);
                 }
             }
         })
@@ -91,6 +91,9 @@ class Faun {
             console.log('calling window')
             try{
                 const res = await addEntry(cid);
+                console.log('ADD_ENTRY')
+                console.log(res)
+                console.log(cid)
 
             }catch(e){
                 console.log('error sending change')
@@ -171,17 +174,18 @@ class Faun {
     }
 }
 
-const broadcastUpdates = _.debounce((text: string, syncClient: SyncClient) => {
-    let doc = syncClient.getDoc();
-    if (doc) {
-        let newDoc = getUpdatedDocFromText(doc, text);
-        syncClient.syncDoc(newDoc);
-    }
-}, 100);
+// const broadcastUpdates = _.debounce((text: string, syncClient: SyncClient) => {
+//     let doc = syncClient.getDoc();
+//     if (doc) {
+//         let newDoc = getUpdatedDocFromText(doc, text);
+//         syncClient.syncDoc(newDoc);
+//     }
+// }, 100);
 
 export const CollaborativeEditor = () => {
     const [clock, setClock] = useState<boolean>(false)
     const [text, setText] = useState<string | null>(null);
+    const [faun, setFaun] = useState<any>(null);
     const [syncClient, setSyncClient] = useState(new SyncClient());
 
     useEffect(() => {
@@ -225,16 +229,18 @@ export const CollaborativeEditor = () => {
 
         if(!clock){
             setClock(true)
-            faun = new Faun(syncClient)
+            let faunTemp = new Faun(syncClient)
 
-            faun.client.handleDocUpdate = (doc) => {
+            setFaun(faunTemp)
+
+            faunTemp.client.handleDocUpdate = (doc) => {
                 setText(doc.text.toString());
             };
 
-            faun.record()
+            faunTemp.record('QQQ')
 
             setInterval(() => {
-                console.log(faun.numbers())
+                console.log(faunTemp.numbers())
                 
             }, 1000)
         }
@@ -247,14 +253,15 @@ export const CollaborativeEditor = () => {
     const handleTextUpdate = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newText = e.target.value;
         setText(newText);
-        broadcastUpdates(newText, syncClient);
+
+        faun.record(newText)
+        // broadcastUpdates(newText, syncClient);
     };
 
     return (
         <textarea
             spellCheck={false}
             className="code-editor"
-            disabled={text === null}
             value={text ?? ''}
             onChange={handleTextUpdate}
         />

@@ -257,88 +257,94 @@ config = args[1];
          (seq
           (seq
            (seq
-            (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
-            (call %init_peer_id% ("getDataSrv" "entry") [] entry)
+            (seq
+             (call %init_peer_id% ("getDataSrv" "-relay-") [] -relay-)
+             (call %init_peer_id% ("getDataSrv" "entry") [] entry)
+            )
+            (call %init_peer_id% ("fluence/get-config" "getApp") [] app)
            )
-           (call %init_peer_id% ("fluence/get-config" "getApp") [] app)
+           (call %init_peer_id% ("fluence/get-config" "getApp") [] app0)
           )
-          (call %init_peer_id% ("fluence/get-config" "getApp") [] app0)
+          (call -relay- ("op" "noop") [])
          )
-         (call -relay- ("op" "noop") [])
+         (xor
+          (seq
+           (call -relay- ("op" "noop") [])
+           (call app0.$.user_list.peer_id! (app0.$.user_list.service_id! "is_authenticated") [] res)
+          )
+          (seq
+           (call -relay- ("op" "noop") [])
+           (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 1])
+          )
+         )
         )
+        (call -relay- ("op" "noop") [])
+       )
+       (call %init_peer_id% ("fluence/get-config" "getApp") [] app1)
+      )
+      (call -relay- ("op" "noop") [])
+     )
+     (xor
+      (seq
+       (call -relay- ("op" "noop") [])
+       (call app1.$.user_list.peer_id! (app1.$.user_list.service_id! "get_users") [] allUsers)
+      )
+      (seq
+       (call -relay- ("op" "noop") [])
+       (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 2])
+      )
+     )
+    )
+    (call -relay- ("op" "noop") [])
+   )
+   (fold allUsers.$.users! user
+    (par
+     (seq
+      (call -relay- ("op" "noop") [])
+      (xor
+       (mismatch user.$.peer_id! %init_peer_id%
         (xor
          (seq
-          (call -relay- ("op" "noop") [])
-          (call app0.$.user_list.peer_id! (app0.$.user_list.service_id! "is_authenticated") [] res)
-         )
-         (seq
-          (call -relay- ("op" "noop") [])
-          (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 1])
-         )
-        )
-       )
-       (call -relay- ("op" "noop") [])
-      )
-      (call %init_peer_id% ("fluence/get-config" "getApp") [] app1)
-     )
-     (call -relay- ("op" "noop") [])
-    )
-    (xor
-     (seq
-      (call -relay- ("op" "noop") [])
-      (call app1.$.user_list.peer_id! (app1.$.user_list.service_id! "get_users") [] allUsers)
-     )
-     (seq
-      (call -relay- ("op" "noop") [])
-      (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 2])
-     )
-    )
-   )
-   (call -relay- ("op" "noop") [])
-  )
-  (fold allUsers.$.users! user
-   (par
-    (seq
-     (call -relay- ("op" "noop") [])
-     (xor
-      (mismatch user.$.peer_id! %init_peer_id%
-       (xor
-        (seq
-         (call user.$.relay_id! ("op" "noop") [])
-         (xor
-          (call user.$.peer_id! ("fluence/fluent-pad/text-state" "notifyTextUpdate") [entry res.$.is_authenticated!])
-          (seq
+          (call user.$.relay_id! ("op" "noop") [])
+          (xor
+           (call user.$.peer_id! ("fluence/fluent-pad/text-state" "notifyTextUpdate") [entry res.$.is_authenticated!])
            (seq
             (seq
-             (call user.$.relay_id! ("op" "noop") [])
-             (call -relay- ("op" "noop") [])
+             (seq
+              (call user.$.relay_id! ("op" "noop") [])
+              (call -relay- ("op" "noop") [])
+             )
+             (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 3])
             )
-            (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 3])
+            (call -relay- ("op" "noop") [])
            )
-           (call -relay- ("op" "noop") [])
           )
          )
-        )
-        (seq
          (seq
-          (call user.$.relay_id! ("op" "noop") [])
-          (call -relay- ("op" "noop") [])
+          (seq
+           (call user.$.relay_id! ("op" "noop") [])
+           (call -relay- ("op" "noop") [])
+          )
+          (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 4])
          )
-         (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 4])
         )
        )
+       (null)
       )
-      (null)
      )
-    )
-    (seq
-     (call -relay- ("op" "noop") [])
-     (next user)
+     (seq
+      (call -relay- ("op" "noop") [])
+      (next user)
+     )
     )
    )
   )
+  (xor
+   (call %init_peer_id% ("callbackSrv" "response") [true])
+   (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 5])
+  )
  )
- (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 5])
+ (call %init_peer_id% ("errorHandlingSrv" "error") [%last_error% 6])
 )
 
                  `,
@@ -349,7 +355,8 @@ config = args[1];
                 });
                 h.on('getDataSrv', 'entry', () => {return entry;});
                 h.onEvent('callbackSrv', 'response', (args) => {
-  
+    const [res] = args;
+  resolve(res);
 });
 
                 h.onEvent('errorHandlingSrv', 'error', (args) => {
@@ -367,7 +374,7 @@ config = args[1];
         request = r.build();
     });
     peer.internals.initiateFlow(request);
-    return Promise.race([promise, Promise.resolve()]);
+    return promise;
 }
       
 
