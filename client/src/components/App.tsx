@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import './App.scss';
 
 import { UserList } from './UserList';
-import { CollaborativeEditor } from './CollaborativeEditor';
+import { RadialHeart } from './RadialHeart';
 import { fluentPadApp, relayNode } from 'src/app/constants';
 import { CheckResponse, withErrorHandlingAsync } from './util';
 import { join, leave, registerAppConfig } from 'src/_aqua/app';
 
+import Fog from './Fog.js'
 
 const App = () => {
     const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -117,7 +118,9 @@ const App = () => {
                         <div className="room-wrapper">
                             <h1 className="fluent-pad">FluentPad</h1>
                             <UserList selfName={nickName} />
-                            <CollaborativeEditor />
+                            <RadialHeart nickName={nickName}/>
+
+                            <Fog/>
                         </div>
                     )}
                 </div>

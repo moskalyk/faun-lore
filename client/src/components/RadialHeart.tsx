@@ -33,9 +33,11 @@ class Faun {
 
     public client: SyncClient;
     public peers: [any];
+    public id: any;
 
     constructor(syncClient){
         this.client = syncClient;
+        this.id = null;
         this.peers = [{user: 'masterchief', isOnline:false}]
 
         // register cid handler
@@ -97,6 +99,7 @@ class Faun {
 
             }catch(e){
                 console.log('error sending change')
+                console.log(e)
             }
 
             // broadcastUpdates(String(Math.random()), this.client)
@@ -112,6 +115,7 @@ class Faun {
                 console.log('ONLINE')
                 console.log(user)
                 console.log(onlineStatus)
+                self.id = user
             },
             notifyUserAdded: (user, isOnline) => {
                 console.log('NEW_USER')
@@ -182,7 +186,7 @@ class Faun {
 //     }
 // }, 100);
 
-export const CollaborativeEditor = () => {
+export const RadialHeart = (props: { nickName: string }) => {
     const [clock, setClock] = useState<boolean>(false)
     const [text, setText] = useState<string | null>(null);
     const [faun, setFaun] = useState<any>(null);
@@ -230,14 +234,16 @@ export const CollaborativeEditor = () => {
         if(!clock){
             setClock(true)
             let faunTemp = new Faun(syncClient)
-
             setFaun(faunTemp)
 
             faunTemp.client.handleDocUpdate = (doc) => {
                 setText(doc.text.toString());
             };
 
-            faunTemp.record('QQQ')
+            setInterval(() => {
+                console.log('RECORDING RANDOM NUM')
+                faunTemp.record(`${props.nickName}:${Math.random()}`)
+            }, 2000)
 
             setInterval(() => {
                 console.log(faunTemp.numbers())
