@@ -15,4 +15,4 @@ export const fluentPadApp = {
     user_list: userList,
 };
 
-export const relayNode = krasnodar[3];
+export const relayNode = krasnodar[5];

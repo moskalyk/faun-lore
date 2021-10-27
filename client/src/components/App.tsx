@@ -102,7 +102,7 @@ const App = () => {
                             </div>
                             <input
                                 className="text-input"
-                                placeholder="Your spirit"
+                                placeholder="your nickname"
                                 type="text"
                                 value={nickName}
                                 disabled={isInRoom}
@@ -124,7 +124,7 @@ const App = () => {
                     {isInRoom && (
                         <div className="room-wrapper">
                             
-                            <UserList selfName={nickName} />
+                            {/*<UserList selfName={nickName} /> */}
                             <Fog nickName={nickName}/>
                         </div>
                     )}

@@ -200,6 +200,8 @@ class RadialHeart extends React.Component {
           var instrument = osc
 
           var playNotes = function(notes) {
+              console.log('NOTE')
+              console.log(notes)
               if (note < notes.length) {
                   instrument.freq(174 + (notes[note] * 64 )); // hertz
                   note = note + 1;
@@ -218,7 +220,7 @@ class RadialHeart extends React.Component {
             console.log(this.props.vibrations)
             playNotes(this.props.vibrations);
             // console.log('playing notes')
-          }, 1000)
+          }, 14000)
 
         }
 

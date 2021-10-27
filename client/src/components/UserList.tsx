@@ -21,7 +21,8 @@ export const UserList = (props: { selfName: string }) => {
         setUsers((prev) => {
             const result = new Map(prev);
             const u = result.get(user);
-            if (u) {
+
+            if (u && (user.name != 'her' || user.name != 'thoth' || user.name != 'hello' )) {
                 result.set(user, { ...u, isOnline: onlineStatus });
             }
             return result;
@@ -81,6 +82,19 @@ export const UserList = (props: { selfName: string }) => {
             clearTimeout(listRefreshTimer);
         };
     }, []);
+
+    function deleteUser(arr, name) {
+      for(var i = 0; i < arr.length; i++) {
+         if(arr[i].name === name) {
+           arr.splice(i, 1)
+           return;
+         }
+      }
+    }
+
+    deleteUser(Array.from(users), 'thoth')
+    deleteUser(Array.from(users), 'her')
+    deleteUser(Array.from(users), 'test')
 
     const usersArray = Array.from(users)
         .map((x) => x[1])

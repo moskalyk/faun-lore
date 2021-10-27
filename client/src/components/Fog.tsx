@@ -13,25 +13,20 @@ import { Fluence, FluencePeer, PeerIdB58 } from '@fluencelabs/fluence';
 
 import RadialHeart from './RadialHeart'
 
-import BlueberryDevice from './peripherals/BlueberryConnect.js'
-const EventEmitter = require( 'events' );
-
 interface User {
     id: PeerIdB58;
     name: string;
     isOnline: boolean;
 }
 
-class Faun extends EventEmitter {
-
+class Faun {
 
     // public client: SyncClient;
     public peers: [any];
     public id: any;
     public pouch: any;
 
-    constructor(blueberry){
-        super()
+    constructor(){
         // this.client = syncClient;
         this.id = null;
         this.peers = [{user: 'masterchief', isOnline:false}]
@@ -45,7 +40,9 @@ class Faun extends EventEmitter {
                     console.log(changes)
                     const window = changes.split(':')[1]
                     const notes = window.split(',')
-                    this.pouch[changes.split(':')[0]] = window.split(',')
+                    const notesNumber = window.split(',').map(el => Number(el))
+
+                    this.pouch[changes.split(':')[0]] = notesNumber
                     // playSparkline(notes)
                     console.log(notes)
                     // this.client.receiveChanges(changes);
@@ -90,17 +87,14 @@ class Faun extends EventEmitter {
     }
 
     // push a particle
-    async record(window){
+    async record(cid){
         // setInterval(async () => {
             console.log('calling window')
             try{
-                // local pouch window
-                let ray = window.split(':')[1].slice(0, 1000)
-                this.pouch[window.split(':')[0]] = ray
-                const res = await addEntry(ray);
+                const res = await addEntry(cid);
                 console.log('ADD_ENTRY')
                 console.log(res)
-                console.log(window)
+                console.log(cid)
 
             }catch(e){
                 console.log('error sending change')
@@ -172,96 +166,12 @@ const Fog = (props: { nickName: string }) => {
     const [pocket, setPocket] = useState<any>(null)
     // const [syncClient, setSyncClient] = useState(new SyncClient());
 
-    // const connectBlueberry = async () => {
-    //     console.log('connecting')
-    //     // new fox connected
-    //     // const newFox = new Fox(ethersProvider.getSigner())
-
-    //     // fox connects to the cosmic fog
-    //     // const fog = new Fog(fox)
-
-    //     // faun consums a blueberry
-    //     const faun = new Faun(blueberry)
-
-    //     // faun emits lore from surrounding peers
-    //     faun.on('lore', async (e) => {
-    //       console.log('LOR_EVENT')
-    //       console.log(e)
-
-    //       // fox snatches blueberry CID signatures
-    //       const cid = await fox.snatch(e)
-    //       console.log(cid)
-    //     })
-
-
-
-    //     // TODO: maybe move into faun 
-    //     blueberryDevice.start_connection();
-
-    //     setBlueberry(blueberryDevice)
-    //     setFox(newFox)
-    //     setFogForest(fog)
-    //     setFaun(faun)
-    //     setIsOnline(true) // extremely ON
-    //     setClockType('radial-aura')
-    //   }
-
-    // TODO: set online with fluence and blueberry
-    const connect_cb = () => {
-        console.log('CONNECTED')
-        // setIsOnline(true)
-    }
-
-    const disconnect_cb = () => {
-        console.log('DISCONNECTED')
-    }
-
-    const try_connect_cb = () => {
-        console.log('Connecting...')
-    }
-
-    // pluck a pouch of flora
-    const pluck = (pouch) => {
-        // TODO: must optimize
-        // for every users window
-        const window: any = []
-        const windowSize = Object.keys(pouch)[0].length
-
-
-        let agdx = 0
-        for (var i = 0; i < windowSize; i++ ) {
-            Object.keys(pouch).map((el) => {
-                // add the elements at each reading
-                agdx += pouch[el][i]
-            })
-            window.push(agdx)
-        }
-
-        // scale to multiply by 174hz for frequency reading
-        const max = Math.max(...window)
-
-        // get max & min and divide to get percentage. subtract -.5 & 
-        const hz = window.map(el => el / max)
-
-        return hz
-
-    }
-
     useEffect(() => {
         let faun;
         if(!clock){
             setClock(true)
-            const blueberry = new BlueberryDevice(connect_cb.bind(this), disconnect_cb.bind(this), try_connect_cb.bind(this))
-
-            blueberry.start_connection();
-
-            let faunTemp = new Faun(blueberry)
+            let faunTemp = new Faun()
             setFaun(faunTemp)
-
-            // const faun = new Faun(blueberry)
-
-
-
 
             // faunTemp.client.handleDocUpdate = (doc) => {
             //     setText(doc.text.toString());
@@ -269,33 +179,23 @@ const Fog = (props: { nickName: string }) => {
 
             setInterval(async () => {
                 console.log('RECORDING RANDOM NUM')
-                // poke
-                let lightWindow = blueberry.getData('880nm_850nm_27mm');
-                console.log(lightWindow)
-
-                await faunTemp.record(`${props.nickName}:${lightWindow}`)
-
+                await faunTemp.record(`${props.nickName}:${[Math.random(),Math.random(),Math.random() ]}`)
             }, 5000)
 
             setInterval(() => {
-                // scry
                 console.log(faunTemp.numbers())
                 setOnline(faunTemp.numbers())
                 console.log('UN_LOAD_POUCH')
                 console.log(faunTemp.pouch)
-
-                if(Object.keys(faunTemp.pouch).length != 0){
-                    console.log('PLUCK')
-                    console.log(pluck(faunTemp.pouch))
-                    setPocket(pluck(faunTemp.pouch))
-                }
+                setPocket(faunTemp.pouch)
             }, 3000)
         }
     }, []);
 
     return (
-        <div>
+        <div className="fed">
             <p>online: {online}</p>
+            <p>nick: {props.nickName}</p>
             <RadialHeart online={online} vibrations={pocket}/>
         </div>
     );
