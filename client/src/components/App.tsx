@@ -36,42 +36,9 @@ const App = () => {
         }
     }
 
+
     useEffect(() => {
         connect()
-            setInterval(() => {
-                const pouch = {
-                    thoth: [3440, 1440, 2000, 1000, 1321, 6000, 2320, 1430],
-                    seshat: [3440, 1140, 2000, 1000, 4321, 3214, 5123, 1800]
-                }
-
-                // TODO: must optimize
-                // for every users window
-                const window = []
-                const windowSize = Object.keys(pouch)[0].length
-
-                let agdx = 0
-
-                for (var i = 0; i < windowSize; i++ ) {
-
-                   Object.keys(pouch).map((el) => {
-                       agdx += pouch[el][i]
-                    })
-
-                   window.push(agdx)
-                    // console.log(pouch[el]
-                }
-
-                console.log(window)
-                
-                const max = Math.max(pouch[el])
-        }, 5000)
-
-
-
-        // add the elements at each reading
-        // get max & min and divide to get percentage. subtract -.5 & 
-        // scale to multiply by 440hz for frequency reading
-
     }, []);
 
     const joinRoom = async () => {

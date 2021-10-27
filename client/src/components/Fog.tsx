@@ -90,14 +90,17 @@ class Faun extends EventEmitter {
     }
 
     // push a particle
-    async record(cid){
+    async record(window){
         // setInterval(async () => {
             console.log('calling window')
             try{
-                const res = await addEntry(cid);
+                // local pouch window
+                let ray = window.split(':')[1].slice(0, 1000)
+                this.pouch[window.split(':')[0]] = ray
+                const res = await addEntry(ray);
                 console.log('ADD_ENTRY')
                 console.log(res)
-                console.log(cid)
+                console.log(window)
 
             }catch(e){
                 console.log('error sending change')
@@ -217,6 +220,33 @@ const Fog = (props: { nickName: string }) => {
         console.log('Connecting...')
     }
 
+    // pluck a pouch of flora
+    const pluck = (pouch) => {
+        // TODO: must optimize
+        // for every users window
+        const window: any = []
+        const windowSize = Object.keys(pouch)[0].length
+
+
+        let agdx = 0
+        for (var i = 0; i < windowSize; i++ ) {
+            Object.keys(pouch).map((el) => {
+                // add the elements at each reading
+                agdx += pouch[el][i]
+            })
+            window.push(agdx)
+        }
+
+        // scale to multiply by 174hz for frequency reading
+        const max = Math.max(...window)
+
+        // get max & min and divide to get percentage. subtract -.5 & 
+        const hz = window.map(el => el / max)
+
+        return hz
+
+    }
+
     useEffect(() => {
         let faun;
         if(!clock){
@@ -243,7 +273,8 @@ const Fog = (props: { nickName: string }) => {
                 let lightWindow = blueberry.getData('880nm_850nm_27mm');
                 console.log(lightWindow)
 
-                // await faunTemp.record(`${props.nickName}:${[Math.random(),Math.random(),Math.random() ]}`)
+                await faunTemp.record(`${props.nickName}:${lightWindow}`)
+
             }, 5000)
 
             setInterval(() => {
@@ -252,7 +283,12 @@ const Fog = (props: { nickName: string }) => {
                 setOnline(faunTemp.numbers())
                 console.log('UN_LOAD_POUCH')
                 console.log(faunTemp.pouch)
-                setPocket(faunTemp.pouch)
+
+                if(Object.keys(faunTemp.pouch).length != 0){
+                    console.log('PLUCK')
+                    console.log(pluck(faunTemp.pouch))
+                    setPocket(pluck(faunTemp.pouch))
+                }
             }, 3000)
         }
     }, []);
@@ -260,7 +296,7 @@ const Fog = (props: { nickName: string }) => {
     return (
         <div>
             <p>online: {online}</p>
-            <RadialHeart onClick={connectBlueberry} online={online} vibrations={pocket}/>
+            <RadialHeart online={online} vibrations={pocket}/>
         </div>
     );
 };

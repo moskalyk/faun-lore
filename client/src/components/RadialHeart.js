@@ -9,12 +9,12 @@ let aud, osc, audiocontext;
 
 var note = 0;
 
-type VibrationProps = {
-  online: number,
-  vibrations: [number]
-}
+// type VibrationProps = {
+//   online: number,
+//   vibrations: [number]
+// }
 
-class RadialHeart extends React.Component<VibrationProps> {
+class RadialHeart extends React.Component {
     constructor(props) {
         super(props)
         this.myRef = React.createRef()
@@ -191,19 +191,20 @@ class RadialHeart extends React.Component<VibrationProps> {
 
         // Toggles song on click
         p.handleClick = () => {
-          const notes = [10*Math.random(), 14*Math.random(), 40*Math.random(), 23*Math.random()]
-          console.log('playing from audio')
+
+          // const notes = [10*Math.random(), 14*Math.random(), 40*Math.random(), 23*Math.random()]
+          console.log('playing from the heart')
 
           var playing = 0;
           // var amplifier = aud.createGain();
           var instrument = osc
 
-          var playNotes = function() {
+          var playNotes = function(notes) {
               if (note < notes.length) {
-                  instrument.freq(140 + (notes[note] * 64 )); // hertz
+                  instrument.freq(174 + (notes[note] * 64 )); // hertz
                   note = note + 1;
               } else {
-                instrument.freq(140)
+                instrument.freq(174)
                 note = 0
                   // amplifier.gain.value = 0;
               }
@@ -213,7 +214,9 @@ class RadialHeart extends React.Component<VibrationProps> {
           instrument.start();
 
           setInterval(() => {
-            playNotes();
+            console.log('VIBRATIONS')
+            console.log(this.props.vibrations)
+            playNotes(this.props.vibrations);
             // console.log('playing notes')
           }, 1000)
 
