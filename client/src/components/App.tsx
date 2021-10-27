@@ -4,11 +4,15 @@ import React, { useEffect, useState } from 'react';
 import './App.scss';
 
 import { UserList } from './UserList';
-import { CollaborativeEditor } from './CollaborativeEditor';
+// import { RadialHeart } from './RadialHeart';
 import { fluentPadApp, relayNode } from 'src/app/constants';
 import { CheckResponse, withErrorHandlingAsync } from './util';
 import { join, leave, registerAppConfig } from 'src/_aqua/app';
 
+import './World.css'
+// import World from './World'
+import Fog from './Fog'
+import loreMap from './smolHacks/lore-map.gif'
 
 const App = () => {
     const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -34,6 +38,40 @@ const App = () => {
 
     useEffect(() => {
         connect()
+            setInterval(() => {
+                const pouch = {
+                    thoth: [3440, 1440, 2000, 1000, 1321, 6000, 2320, 1430],
+                    seshat: [3440, 1140, 2000, 1000, 4321, 3214, 5123, 1800]
+                }
+
+                // TODO: must optimize
+                // for every users window
+                const window = []
+                const windowSize = Object.keys(pouch)[0].length
+
+                let agdx = 0
+
+                for (var i = 0; i < windowSize; i++ ) {
+
+                   Object.keys(pouch).map((el) => {
+                       agdx += pouch[el][i]
+                    })
+
+                   window.push(agdx)
+                    // console.log(pouch[el]
+                }
+
+                console.log(window)
+                
+                const max = Math.max(pouch[el])
+        }, 5000)
+
+
+
+        // add the elements at each reading
+        // get max & min and divide to get percentage. subtract -.5 & 
+        // scale to multiply by 440hz for frequency reading
+
     }, []);
 
     const joinRoom = async () => {
@@ -91,10 +129,13 @@ const App = () => {
                                 joinRoom();
                             }}
                         >
-                            <h1 className="form-caption">Welcome to FluentPad</h1>
+                            <h1 className="form-caption">faun-lore</h1>
+                            <div className="mm">
+                                <img src={loreMap} width={'193px'} />
+                            </div>
                             <input
                                 className="text-input"
-                                placeholder="Your name"
+                                placeholder="Your spirit"
                                 type="text"
                                 value={nickName}
                                 disabled={isInRoom}
@@ -115,9 +156,9 @@ const App = () => {
 
                     {isInRoom && (
                         <div className="room-wrapper">
-                            <h1 className="fluent-pad">FluentPad</h1>
+                            
                             <UserList selfName={nickName} />
-                            <CollaborativeEditor />
+                            <Fog nickName={nickName}/>
                         </div>
                     )}
                 </div>

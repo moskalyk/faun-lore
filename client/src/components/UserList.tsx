@@ -37,7 +37,8 @@ export const UserList = (props: { selfName: string }) => {
 
         registerUserStatus({
             notifyOnline: (user, onlineStatus) => {
-            updateOnlineStatus(user, onlineStatus);
+                console.log('ONLINE')
+                updateOnlineStatus(user, onlineStatus);
             },
             notifyUserAdded: (user, isOnline) => {
             setUsers((prev) => {

@@ -24,6 +24,15 @@ body {
     font-family: 'Montserrat', sans-serif;
 }
 
+.fed {
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    display: inline;
+}
+
 .header-wrapper {
     padding: 0 20px;
     height: $header-height;
