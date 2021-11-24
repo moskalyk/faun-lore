@@ -39,15 +39,22 @@ class Faun extends EventEmitter {
 
         // register cid handler
         registerTextState({
-            notifyTextUpdate: (changes, isAuthorized) => {
+            notifyTextUpdate: (window, isAuthorized) => {
                 console.log('CHANGES')
-                if (changes) {
-                    console.log(changes)
-                    const window = changes.split(':')[1]
-                    const notes = window.split(',')
-                    this.pouch[changes.split(':')[0]] = window.split(',')
+                if (window) {
+                    console.log(window)
+                    // const window = window.split(':')[1]
+                    // const notes = window.split(',')
+
+                    let rayRaw = window.split(':')[1].split(',').slice(0, 1000)
+                    let nick = window.split(':')[0]
+
+                    let ray = rayRaw.map(bit => Number(bit))
+
+                    this.pouch[nick] = ray
                     // playSparkline(notes)
-                    console.log(notes)
+                    console.log('NOTES_IN_NOTIFY')
+                    console.log(ray)
                     // this.client.receiveChanges(changes);
                 }
             }
@@ -95,8 +102,11 @@ class Faun extends EventEmitter {
             console.log('calling window')
             try{
                 // local pouch window
-                let ray = window.split(':')[1].slice(0, 1000)
-                this.pouch[window.split(':')[0]] = ray
+                let rayRaw = window.split(':')[1].split(',').slice(0, 1000)
+                let nick = window.split(':')[0]
+                let ray = rayRaw.map(bit => Number(bit))
+                // let window = window.split(':')[1].slice(0, 1000)
+                this.pouch[nick] = ray
                 const res = await addEntry(ray);
                 console.log('ADD_ENTRY')
                 console.log(res)
@@ -225,8 +235,10 @@ const Fog = (props: { nickName: string }) => {
         // TODO: must optimize
         // for every users window
         const window: any = []
-        const windowSize = Object.keys(pouch)[0].length
-
+        const windowSize = pouch[Object.keys(pouch)[0]].length
+        console.log('WINDOW_SIZE')
+        console.log(Object.keys(pouch)[0])
+        console.log(windowSize)
 
         let agdx = 0
         for (var i = 0; i < windowSize; i++ ) {
@@ -251,6 +263,7 @@ const Fog = (props: { nickName: string }) => {
         let faun;
         if(!clock){
             setClock(true)
+            console.log('get blueberry')
             const blueberry = new BlueberryDevice(connect_cb.bind(this), disconnect_cb.bind(this), try_connect_cb.bind(this))
 
             blueberry.start_connection();
@@ -268,7 +281,6 @@ const Fog = (props: { nickName: string }) => {
             // };
 
             setInterval(async () => {
-                console.log('RECORDING RANDOM NUM')
                 // poke
                 let lightWindow = blueberry.getData('880nm_850nm_27mm');
                 console.log(lightWindow)
@@ -286,10 +298,11 @@ const Fog = (props: { nickName: string }) => {
 
                 if(Object.keys(faunTemp.pouch).length != 0){
                     console.log('PLUCK')
+                    console.log(faunTemp.pouch)
                     console.log(pluck(faunTemp.pouch))
                     setPocket(pluck(faunTemp.pouch))
                 }
-            }, 3000)
+            }, 14000)
         }
     }, []);
 

@@ -194,31 +194,37 @@ class RadialHeart extends React.Component {
 
           // const notes = [10*Math.random(), 14*Math.random(), 40*Math.random(), 23*Math.random()]
           console.log('playing from the heart')
+          console.log(this.props.vibrations)
 
           var playing = 0;
           // var amplifier = aud.createGain();
           var instrument = osc
 
           var playNotes = function(notes) {
-              if (note < notes.length) {
-                  instrument.freq(174 + (notes[note] * 64 )); // hertz
-                  note = note + 1;
-              } else {
-                instrument.freq(174)
-                note = 0
-                  // amplifier.gain.value = 0;
+              if(notes){
+
+                  if (note < notes.length && (notes[note] > 0.1)) {
+                      console.log('PLAYING NOTE')
+                      instrument.freq(174 + (notes[note] * 64 )); // hertz
+                      note = note + 1;
+                  } else {
+                    // instrument.freq(174)
+                    note = 0
+                      // amplifier.gain.value = 0;
+                  }
+                  playing = window.setTimeout(playNotes, 40);
               }
-              playing = window.setTimeout(playNotes, 40);
           };
           instrument.type = 'sine'; // 'sine', 'square', 'sawtooth', 'triangle'
           instrument.start();
 
-          setInterval(() => {
+          setInterval((hzNotes) => {
             console.log('VIBRATIONS')
-            console.log(this.props.vibrations)
-            playNotes(this.props.vibrations);
+            console.log(hzNotes)
+            playNotes([0.027885409581187445, 0.055667573608007, 0.08354387328733845, 0.11138676999319794, 0.13920233699348947, 0.16695413468078904, 0.19473629870760858, 0.22253364590418812, 0.2503977990477116, 0.2780524244485473, 0.3057799290642309, 0.33347403070644255, 0.3613776600913419, 0.3891446409484015, 0.4168812554659411, 0.4447241521718006, 0.4722451656787484, 0.5000607326790399, 0.5277244679817316, 0.5554216062578953, 0.5832675395977067, 0.6109343115343504, 0.63865574288213, 0.6666595811874454, 0.6944478184821689, 0.7223757409386843, 0.7501245019920318, 0.7777700174910116, 0.8055248518122632, 0.8334163346613546, 0.8611924254202702, 0.8888804537945778, 0.9167203138664852, 0.9444053056068409, 0.9721479933922845, 1]);
+            // playNotes(hzNotes);
             // console.log('playing notes')
-          }, 1000)
+          }, 140, this.props.vibrations)
 
         }
 
