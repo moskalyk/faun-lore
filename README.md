@@ -12,5 +12,3 @@ in this version of fluent-pad, I removed the in-memory history, because I was ex
 Thinking of Ohm reduction limits via CID particles when measuring eletromotive forces of carbon lifeforms, with stored energy via optimal flow state for modal state transition
 
 trees becoming coil like spirit totems for informational decentralized compression resistance using curatorial mechanisms of like-frequencies
-
-If you’re reading this: drop everything you’re doing now, I need your help
