@@ -25,3 +25,7 @@ bands of frequency from brain computer interface data can be assigned fractional
 ## clinical research
 pair such readings over time to map to lunar cycles or timely adminstered medicine
 
+## bio-DAOs
+groups of communication and up time of flow states can be shared to other member when communicating from a distance.
+
+use case: travelling over a long distance, to the moon, or mars, sending a radial pulse to a friend or lover at a distance as a show of compassion for anothers thoughts, frequencies, & energy.
