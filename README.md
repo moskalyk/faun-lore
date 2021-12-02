@@ -18,7 +18,7 @@ experimenting with the idea of distributing a dapp on urbit with the 2 networks 
 
 Q: why is this a bad idea? network of urbit & the network of fluence coming together as a way to not clog a network with data packets, while also keeping the fundamental principles of a p2p network in check.
 
-bands of frequency from brain computer interface data can be assigned fractional NFT', which can be integrated in a timely ritual POAP using %gora.
+bands of frequency from brain computer interface data can be assigned fractional NFT', which can be integrated in a timely ritual POAP using %gora. based on your groups reading, you would take the average norm of the reading read from various bands, and assigned a color.
 
 ![urbit_fluence](./urbit_fluence.png)
 
