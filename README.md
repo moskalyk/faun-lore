@@ -16,9 +16,12 @@ attaching data feeds to the supply chain of trees, where cognitive threads becom
 ## integrations & software distribution
 experimenting with the idea of distributing a dapp on urbit with the 2 networks integrated. 
 
-Q: why is this a bad idea? network of urbit & the network of fluence coming together as a way to not clog a network of data packets, while also keeping the fundamentals of a p2p network in check.
+Q: why is this a bad idea? network of urbit & the network of fluence coming together as a way to not clog a network with data packets, while also keeping the fundamental principles of a p2p network in check.
 
-bands of frequency from brain computer interface data can be assigned fractional NFT, which can be integrated in a timely ritual POAP using %gora.
+bands of frequency from brain computer interface data can be assigned fractional NFT', which can be integrated in a timely ritual POAP using %gora.
 
 ![urbit_fluence](./urbit_fluence.png)
+
+## clinical research
+pair such readings over time to map to lunar cycles or timely adminstered medicine
 
